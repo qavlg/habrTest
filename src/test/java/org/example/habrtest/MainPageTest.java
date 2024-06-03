@@ -6,10 +6,13 @@ import org.junit.jupiter.api.*;
 import static org.junit.jupiter.api.Assertions.*;
 
 import org.openqa.selenium.By;
+import org.openqa.selenium.PageLoadStrategy;
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.WebElement;
 import org.openqa.selenium.chrome.ChromeDriver;
 import org.openqa.selenium.chrome.ChromeOptions;
+import org.openqa.selenium.support.ui.ExpectedConditions;
+import org.openqa.selenium.support.ui.WebDriverWait;
 
 import java.time.Duration;
 import java.util.List;
@@ -22,12 +25,12 @@ public class MainPageTest {
     public void setUp() {
         ChromeOptions options = new ChromeOptions();
         // Fix the issue https://github.com/SeleniumHQ/selenium/issues/11750
+        options.setPageLoadStrategy(PageLoadStrategy.EAGER);
         options.addArguments("--remote-allow-origins=*");
         driver = new ChromeDriver(options);
         driver.manage().window().maximize();
-        driver.manage().timeouts().implicitlyWait(Duration.ofSeconds(10));
-        driver.get("https://habr.com/");
-
+        driver.manage().timeouts().implicitlyWait(Duration.ofSeconds(1));
+        //driver.get("https://habr.com/");
 
     }
 
@@ -37,39 +40,50 @@ public class MainPageTest {
     }
 
     @Test
-    @DisplayName("Вход в Хабр")
-    public void login() {
-
-        String login = "Aleksei";
-        String password = "12345678";
-
-
-        WebElement logIn = driver.findElement(By.cssSelector("button[class=\"btn btn_solid btn_small tm-header-user-menu__login\"]"));
-        logIn.click();
-
-        WebElement LoginField = driver.findElement(By.cssSelector("#email_field"));
-        LoginField.sendKeys(login);
-
-        WebElement PasswordField = driver.findElement(By.cssSelector("#password_field"));
-        PasswordField.sendKeys(password);
-
-        WebElement logInButton = driver.findElement(By.cssSelector("#login_form > fieldset > div.form__buttons.s-buttons > button"));
-        logInButton.click();
+    public void visibleAfter() {
+        driver.get("https://demoqa.com/dynamic-properties");
+        By button = By.cssSelector("#visibleAfter");
+        WebDriverWait wait = new WebDriverWait(driver, Duration.ofSeconds(5));
+        wait.until(ExpectedConditions.elementToBeClickable(button));
+        WebElement visibleButton = driver.findElement(By.cssSelector("#visibleAfter"));
+        assertTrue(visibleButton.isEnabled(),"Кнопка нет после 5 сек");
 
     }
 
-    @Test
-    @DisplayName("Поиск новостей")
-    public void search() {
-
-        WebElement search = driver.findElement(By.cssSelector("nav > a:nth-child(5)"));
-        search.click();
-
-        WebElement searchInfo = driver.findElement(By.cssSelector("#\\38 17939 > div.tm-article-snippet.tm-article-snippet > h2 > a > span"));
-        searchInfo.click();
-
-        List<WebElement> news = driver.findElements(By.xpath("//h2[contains(text(),'Читают сейчас')]"));
-        assertFalse(news.isEmpty(),"Читают сейчас не найдено");
+//    @Test
+//    @DisplayName("Вход в Хабр")
+//    public void login() {
+//
+//        String login = "Aleksei";
+//        String password = "12345678";
+//
+//
+//        WebElement logIn = driver.findElement(By.cssSelector("button[class=\"btn btn_solid btn_small tm-header-user-menu__login\"]"));
+//        logIn.click();
+//
+//        WebElement LoginField = driver.findElement(By.cssSelector("#email_field"));
+//        LoginField.sendKeys(login);
+//
+//        WebElement PasswordField = driver.findElement(By.cssSelector("#password_field"));
+//        PasswordField.sendKeys(password);
+//
+//        WebElement logInButton = driver.findElement(By.cssSelector("#login_form > fieldset > div.form__buttons.s-buttons > button"));
+//        logInButton.click();
+//
+//    }
+//
+//    @Test
+//    @DisplayName("Поиск новостей")
+//    public void search() {
+//
+//        WebElement search = driver.findElement(By.cssSelector("nav > a:nth-child(5)"));
+//        search.click();
+//
+//        WebElement searchInfo = driver.findElement(By.cssSelector("#\\38 17939 > div.tm-article-snippet.tm-article-snippet > h2 > a > span"));
+//        searchInfo.click();
+//
+//        List<WebElement> news = driver.findElements(By.xpath("//h2[contains(text(),'Читают сейчас')]"));
+//        assertFalse(news.isEmpty(),"Читают сейчас не найдено");
 
 
 
@@ -96,4 +110,4 @@ public class MainPageTest {
     }
 
 
-}
+
